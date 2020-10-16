@@ -32,14 +32,14 @@ class IAN(nn.Module):
 
         aspect_len = torch.tensor(aspect_len, dtype=torch.float).to(self.opt.device)
         aspect_pool = torch.sum(aspect, dim=1)
-        aspect_pool = torch.div(aspect_pool, aspect_len.view(aspect_len.size(0), 1))
+        aspect_pool = torch.div(aspect_pool, aspect_len.view(aspect_len.size(0), 1))#平均池化操作tavg
 
         text_raw_len = torch.tensor(text_raw_len, dtype=torch.float).to(self.opt.device)
         context_pool = torch.sum(context, dim=1)
-        context_pool = torch.div(context_pool, text_raw_len.view(text_raw_len.size(0), 1))
+        context_pool = torch.div(context_pool, text_raw_len.view(text_raw_len.size(0), 1))#cavg
 
-        aspect_final, _ = self.attention_aspect(aspect, context_pool)
-        aspect_final = aspect_final.squeeze(dim=1)
+        aspect_final, _ = self.attention_aspect(aspect, context_pool)#key,query。(?, q_len, out_dim)
+        aspect_final = aspect_final.squeeze(dim=1)#(?,out_dim)
         context_final, _ = self.attention_context(context, aspect_pool)
         context_final = context_final.squeeze(dim=1)
 
