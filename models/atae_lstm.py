@@ -27,13 +27,15 @@ class ATAE_LSTM(nn.Module):
         aspect_len = torch.tensor(torch.sum(aspect_indices != 0, dim=-1), dtype=torch.float).to(self.opt.device)
 
         x = self.embed(text_raw_indices)
-        x = self.squeeze_embedding(x, x_len)
+        x = self.squeeze_embedding(x, x_len)#context[32,n,300]
+        
         aspect = self.embed(aspect_indices)
         aspect_pool = torch.div(torch.sum(aspect, dim=1), aspect_len.view(aspect_len.size(0), 1))
-        aspect = torch.unsqueeze(aspect_pool, dim=1).expand(-1, x_len_max, -1)
-        x = torch.cat((aspect, x), dim=-1)
+        aspect = torch.unsqueeze(aspect_pool, dim=1).expand(-1, x_len_max, -1)#[32,x_len_max,300]
+        x = torch.cat((aspect, x), dim=-1)#[32,x_len_max,600]
 
         h, (_, _) = self.lstm(x, x_len)
+        
         ha = torch.cat((h, aspect), dim=-1)
         _, score = self.attention(ha)
         output = torch.squeeze(torch.bmm(score, h), dim=1)
