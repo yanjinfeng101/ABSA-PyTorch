@@ -34,9 +34,9 @@ class ATAE_LSTM(nn.Module):
         aspect = torch.unsqueeze(aspect_pool, dim=1).expand(-1, x_len_max, -1)#[32,x_len_max,300]
         x = torch.cat((aspect, x), dim=-1)#[32,x_len_max,600]
 
-        h, (_, _) = self.lstm(x, x_len)
+        h, (_, _) = self.lstm(x, x_len)#[32,x_len_max,1200]
         
-        ha = torch.cat((h, aspect), dim=-1)
+        ha = torch.cat((h, aspect), dim=-1)#[32,x_len_max,1500]
         _, score = self.attention(ha)
         output = torch.squeeze(torch.bmm(score, h), dim=1)
 
