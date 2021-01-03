@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 from transformers import BertTokenizer
 
 
-def build_tokenizer(fnames, max_seq_len, dat_fname):
+def build_tokenizer(fnames, max_seq_len, dat_fname):#字符化
     if os.path.exists(dat_fname):
         print('loading tokenizer:', dat_fname)
         tokenizer = pickle.load(open(dat_fname, 'rb'))
